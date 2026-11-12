@@ -1,0 +1,58 @@
+esphome:wemos-display.yaml
+  name: wemos-tft-display
+  friendly_name: WeMos TFT Display
+
+esp8266:
+  board: d1_mini
+
+logger:
+
+api:
+
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: "RT-WIFI-C5EA"
+  password: "hMHFLAtzYj"
+
+spi:
+  clk_pin: D5
+  mosi_pin: D7
+  miso_pin: D6
+
+font:
+  - file: "gfonts://Roboto"
+    id: my_font
+    size: 24
+
+color:
+  - id: my_blue
+    red: 0%
+    green: 50%
+    blue: 100%
+  - id: my_white
+    red: 100%
+    green: 100%
+    blue: 100%
+
+display:
+  - platform: ili9xxx
+    model: ILI9341
+    cs_pin: D8
+    dc_pin: D3
+    reset_pin: D4
+    rotation: 90
+    invert_colors: false
+    lambda: |-
+      it.fill(COLOR_BLACK);
+      it.print(10, 10, id(my_font), id(my_blue), "ESPHome работает!");
+      if (id(wifi_status).state) {
+        it.print(10, 50, id(my_font), id(my_white), "Wi-Fi: Подключено");
+      } else {
+        it.print(10, 50, id(my_font), id(my_white), "Wi-Fi: Поиск...");
+      }
+
+binary_sensor:
+  - platform: status
+    id: wifi_status
